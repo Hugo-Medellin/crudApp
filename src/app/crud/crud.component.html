@@ -1,0 +1,228 @@
+<div class="container">
+    <div class="m-4 p-4">
+        <div class="card">
+            <h3 class="card-header px-4 py-3 text-center text-sm-start">Tabla de registros</h3>
+
+            <div class="card-body px-4">
+                <form [formGroup]="formSearch" (ngSubmit)="onSubmitSearch()">
+                    <div class="row g-3 border rounded my-3 pb-3">
+                        <div class="col-md-2">
+                            <label for="numCia" class="form-label fs-6">Num Cia</label>
+                            <input type="number" class="form-control form-control-sm" id="numCia" placeholder="1 2 ..." formControlName="numCia" min="0" max="9999">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="claveMoneda" class="form-label fs-6">Clave moneda</label>
+                            <input type="text" class="form-control form-control-sm" id="claveMoneda" placeholder="MXN" formControlName="claveMoneda" minlength="1" maxlength="4">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="simbolo" class="form-label fs-6">Simbolo</label>
+                            <input type="text" class="form-control form-control-sm" id="simbolo" placeholder="$" formControlName="simbolo" minlength="1" maxlength="3">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="abreviacion" class="form-label fs-6">abreviación</label>
+                            <input type="text" class="form-control form-control-sm" id="abreviacion" placeholder="MXN" formControlName="abreviacion" minlength="1" maxlength="5">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="monedaCorriente" class="form-label fs-6">Moneda corriente</label>
+                            <input type="text" class="form-control form-control-sm" id="monedaCorriente" placeholder="1" formControlName="monedaCorriente" minlength="1" maxlength="1">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="demo" class="form-label fs-6 invisible">-----------------</label>
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="descripcion" class="form-label fs-6">Descripción</label>
+                            <input type="text" class="form-control form-control-sm" id="descripcion" placeholder="pesos mexicanos" formControlName="descripcion" minlength="3" maxlength="30">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label fs-6">Estatus</label>
+                            <select id="status" class="form-select form-select-sm" formControlName="status">
+                                <option selected value="">Selecciona una opción</option>
+                                <option value="A">Activo</option>
+                                <option value="I">Inactivo</option>
+                            </select>
+                        </div>
+
+                        <!--  -->
+                        <div class="col-md-3">
+                            <label for="campo" class="form-label fs-6">Por campo:</label>
+                            <select id="campo" class="form-select form-select-sm" (change)="onChangePaginacion('campo', $event)">
+                                <option value="id.numCia" selected>Num Cia</option>
+                                <option value="id.claveMoneda">Clave moneda</option>
+                                <option value="descripcion">Descripción</option>
+                                <option value="simbolo">Simbolo</option>
+                                <option value="abreviacion">Abreviación</option>
+                                <option value="monedaCorriente">Moneda Corriente</option>
+                                <option value="status">Estatus</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="orden" class="form-label fs-6">Orden:</label>
+                            <select id="orden" class="form-select form-select-sm" (change)="onChangePaginacion('orden', $event)">
+                                <option value="asc" selected>Ascendente</option>
+                                <option value="desc">Descendente</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="row my-3 d-flex justify-content-between">
+                    <div class="col-md-2">
+                        <div class="card-title">
+                            <button class="btn btn-secondary" (click)="registroNuevo()">Agregar nuevo</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="campo" class="form-label fs-6">Tamaño página:</label>
+                        <select id="campo" class="form-select form-select-sm" (change)="onChangePaginacion('tam', $event)">
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                @if(data.length > 0) {
+                    <div class="table-responsive py-2">
+                        <table class="table table-hover table-sm table-striped table-bordered">
+                            <thead class="table-dark text-uppercase">
+                                <tr>
+                                    <th>num cia</th>
+                                    <th>clave moneda</th>
+                                    <th>descripcion</th>
+                                    <th>simbolo</th>
+                                    <th>abreviacion</th>
+                                    <th>moneda corriente</th>
+                                    <th>estatus</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                @for(item of data; track item.status; let index i = $index) {
+                                    <tr>
+                                        <td> {{item.numCia}} </td>
+                                        <td> {{item.claveMoneda}} </td>
+                                        <td> {{item.descripcion}} </td>
+                                        <td> {{item.simbolo}} </td>
+                                        <td> {{item.abreviacion}} </td>
+                                        <td> {{item.monedaCorriente}} </td>
+                                        <td>
+                                            <button class="btn btn-sm rounded-pill" [ngClass]="{'btn-success': item.status == 'A', 'btn-warning': item.status == 'I'}"> {{item.status == 'A' ? 'ACTIVO': 'INACTIVO'}} </button>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <button type="button" class="btn btn-sm btn-primary mx-1" (click)="edit(item)"> <i class="bi bi-pencil-square"></i> </button>
+                                                <button type="button" class="btn btn-sm btn-danger mx-1" (click)="delete(item)"> <i class="bi bi-trash3"></i> </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="row mx-2 d-flex justify-content-around">
+                            <div class="col-md-4 d-flex justify-content-start pb-3">
+                                Total de elementos {{paginacionResponse.totalElements}}
+                            </div>
+                            <div class="col-md-4">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item cp" [ngClass]="{'disabled': paginacionResponse.first}" (click)="onChangePage(paginacionResponse.number - 1)">
+                                        <a class="page-link">Anterior</a>
+                                    </li>
+    
+                                    @for (i of range(paginacionResponse.totalPages); track i) {
+                                    <li class="page-item cp" [ngClass]="{'active': paginacionResponse.number == i}" (click)="onChangePage(i)">
+                                        <a class="page-link"> {{i+1}} </a>
+                                    </li>
+                                    }
+    
+                                    <li class="page-item cp" [ngClass]="{'disabled': paginacionResponse.last}">
+                                        <a class="page-link" (click)="onChangePage(paginacionResponse.number + 1)">Siguiente</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4 d-flex justify-content-end">
+                                Número de elementos {{paginacionResponse.numberOfElements}}
+                            </div>
+                        </div>
+                        
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<button type="button" id="modal" class="invisible" data-bs-toggle="modal" data-bs-target="#staticModalForm"></button>
+<div class="modal fade" id="staticModalForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="needs-validation" id="form" novalidate>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-3" id="staticLabel"> {{titleAction}} registro</h1>
+                    <button type="button" class="btn-close" aria-label="Close" (click)="cancelarRegistro()"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-3 col-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="claveMoneda" placeholder="MXN" formControlName="claveMoneda" required minlength="1" maxlength="4">
+                                <label for="clave_moneda">Clave moneda</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="simbolo" placeholder="$ | $$" formControlName="simbolo" required minlength="1" maxlength="3">
+                                <label for="simbolo">Simbolo</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" placeholder="Describe aquí" id="descripcion" formControlName="descripcion"
+                                    required minlength="3" maxlength="30">
+                                <label for="descripcion">Descripción</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-md-3 col-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" placeholder="Abreviación" id="abreviacion" formControlName="abreviacion" required minlength="1" maxlength="5">
+                                <label for="abreviacion">Abreviación</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="form-floating">
+                                <input class="form-control" placeholder="Moneda Corriente" id="monedaCorriente" formControlName="monedaCorriente" required minlength="1" maxlength="1">
+                                <label for="moneda_corriente">Moneda Corriente</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12 mt-3 mt-md-0">
+                            <div class="form-floating">
+                                <select class="form-select" id="status" aria-label="select para estatus" formControlName="status" required minlength="1" maxlength="1">
+                                    <option selected value="">Selecciona una opción</option>
+                                    <option value="A">Activo</option>
+                                    <option value="I">Inactivo</option>
+                                </select>
+                                <label for="status">Estatus</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="invisible" data-bs-dismiss="modal" id="closeModal"></button>
+                    <button type="button" class="btn btn-secondary" (click)="cancelarRegistro()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">{{titleAction}} Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
