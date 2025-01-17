@@ -46,8 +46,8 @@
                         <!--  -->
                         <div class="col-md-3">
                             <label for="campo" class="form-label fs-6">Por campo:</label>
-                            <select id="campo" class="form-select form-select-sm" (change)="onChangePaginacion('campo', $event)">
-                                <option value="id.numCia" selected>Num Cia</option>
+                            <select id="campo" class="form-select form-select-sm" [(ngModel)]="campo" [ngModelOptions]="{standalone: true}" (change)="onChangePaginacion('campo')">
+                                <option value="id.numCia">Num Cia</option>
                                 <option value="id.claveMoneda">Clave moneda</option>
                                 <option value="descripcion">Descripción</option>
                                 <option value="simbolo">Simbolo</option>
@@ -58,8 +58,8 @@
                         </div>
                         <div class="col-md-3">
                             <label for="orden" class="form-label fs-6">Orden:</label>
-                            <select id="orden" class="form-select form-select-sm" (change)="onChangePaginacion('orden', $event)">
-                                <option value="asc" selected>Ascendente</option>
+                            <select id="orden" class="form-select form-select-sm" [(ngModel)]="orden" [ngModelOptions]="{standalone: true}" (change)="onChangePaginacion('orden')">
+                                <option value="asc">Ascendente</option>
                                 <option value="desc">Descendente</option>
                             </select>
                         </div>
@@ -73,16 +73,18 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
-                        <label for="campo" class="form-label fs-6">Tamaño página:</label>
-                        <select id="campo" class="form-select form-select-sm" (change)="onChangePaginacion('tam', $event)">
-                            <option value="1">1</option>
-                            <option value="2" selected>2</option>
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                        </select>
-                    </div>
+                    @if (data.length > 0) {
+                        <div class="col-md-2">
+                            <label for="tam" class="form-label fs-6">Tamaño página:</label>
+                            <select id="tam" class="form-select form-select-sm" [(ngModel)]="tam" (change)="onChangePaginacion('tam')">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                            </select>
+                        </div>
+                    }
                 </div>
 
 

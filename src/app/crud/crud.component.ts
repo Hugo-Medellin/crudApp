@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import Swal, { SweetAlertIcon } from 'sweetalert2';
 import { CrudService } from '../core/services/crud.service';
@@ -12,7 +12,7 @@ import { DtoPaginacionResponse } from '../core/model/DtoResponse.dto';
 @Component({
   selector: 'app-crud',
   standalone: true,
-  imports: [ReactiveFormsModule, SweetAlert2Module, NgClass],
+  imports: [ReactiveFormsModule, SweetAlert2Module, NgClass, FormsModule],
   templateUrl: './crud.component.html',
   styleUrl: './crud.component.css'
 })
@@ -26,10 +26,14 @@ export class CrudComponent implements OnInit {
 
   formSearch!: FormGroup;
   dtoRequestSearch!: MonedaSearchRequest;
-  private dtoPaginacion: Paginacion = new Paginacion();
+  private paginacionData!: Paginacion;
 
   data: MonedaResponse[] = [];
   paginacionResponse!: DtoPaginacionResponse;
+
+  campo: string = 'id.numCia';
+  orden: string = 'asc';
+  tam: number = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +41,7 @@ export class CrudComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.paginacionData = this.initPaginacion();
     this.form = this.initFormNew();
     this.initFormSearch();
 
@@ -52,6 +57,10 @@ export class CrudComponent implements OnInit {
       monedaCorriente: [''],
       status: ['']
     });
+  }
+
+ private initPaginacion(): Paginacion {
+    return new Paginacion(this.campo + ',' + this.orden, 0, this.tam);
   }
 
   initFormSearch(): void {
@@ -96,7 +105,7 @@ export class CrudComponent implements OnInit {
           if(resp.status == 201){
             this.closeModal();
             this.success();
-            this.dtoPaginacion = new Paginacion();
+            this.paginacionData = this.initPaginacion();
             this.getAll();
           }
       });
@@ -112,7 +121,7 @@ export class CrudComponent implements OnInit {
 
   getAll(): void {
     this.dtoRequestSearch = this.formSearch.value;
-    this.crudService.findAll(this.dtoRequestSearch, this.dtoPaginacion).subscribe( (resp) => {
+    this.crudService.findAll(this.dtoRequestSearch, this.paginacionData).subscribe( (resp) => {
       if(resp.codigo_estatus == 0){
         this.data = [...resp.contenido];
         this.paginacionResponse = resp.paginacion;
@@ -122,7 +131,7 @@ export class CrudComponent implements OnInit {
 
   onSubmitSearch(): void {
     this.dtoRequestSearch = this.formSearch.value;
-    this.dtoPaginacion = new Paginacion();
+    this.paginacionData = this.initPaginacion();
     this.getAll();
   }
 
@@ -146,7 +155,7 @@ export class CrudComponent implements OnInit {
       if(result){
         this.crudService.deleteMoneda(item.numCia).subscribe( (resp) => {
           if(resp.codigo_estatus == 0){
-            this.dtoPaginacion = new Paginacion();
+            this.paginacionData = this.initPaginacion();
             this.getAll();
             this.success('¡Eliminación exitosa!', resp.mensajes[0]);
           }
@@ -191,27 +200,26 @@ export class CrudComponent implements OnInit {
     }
   }
 
-  onChangePaginacion(campo: string, event: Event): void {
-    const valor = (event.target as HTMLSelectElement).value;
-
+  onChangePaginacion(campo: string): void {
     switch(campo){
       case 'campo':
-        this.dtoPaginacion.sort = valor + ',' + this.dtoPaginacion.sort?.split(',')[1];
+        this.paginacionData.sort = this.campo + ',' + this.paginacionData.sort?.split(',')[1];
         break;
       case 'orden':
-        this.dtoPaginacion.sort = this.dtoPaginacion.sort?.split(',')[0] + ',' + valor;
+        this.paginacionData.sort = this.paginacionData.sort?.split(',')[0] + ',' + this.orden;
         break;
       case 'tam':
-        this.dtoPaginacion.size = parseInt(valor);
+        this.paginacionData.size = this.tam;
         break;
       default:
         break;
     }
+    this.paginacionData = this.initPaginacion();
     this.getAll();
   }
 
   onChangePage(page: number): void {
-    this.dtoPaginacion.page = page;
+    this.paginacionData.page = page;
     this.getAll();
   }
 
@@ -220,6 +228,8 @@ export class CrudComponent implements OnInit {
   }
 
   private openModal(): void {
+    const buttonElement = document.activeElement as HTMLElement;
+    buttonElement.blur();
     document.getElementById('modal')?.click();
   }
 
@@ -263,6 +273,7 @@ export class CrudComponent implements OnInit {
       timer: 3500,
       toast: true,
       showConfirmButton: false,
+      timerProgressBar: true,
       didClose() {
           if(reload){
             window.location.reload();
