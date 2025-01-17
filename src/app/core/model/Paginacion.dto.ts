@@ -1,8 +1,14 @@
 export class Paginacion {
-  sort?: string = 'id.numCia,asc';
-  page?: number = 0;
-  size?: number = 2;
+  sort: string;
+  page: number;
+  size: number;
   [key: string]: string | number | undefined;
+
+  constructor(sort: string, page: number, size: number) {
+    this.sort = sort;
+    this.page = page;
+    this.size = size;
+  }
 }
 
 export interface PaginacionDto {
