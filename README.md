@@ -16,10 +16,11 @@ Crud básico que consume microservicio de [Repositorio: ms-moneda](https://githu
 - Utilización bootstrap 5
 
 ## Ejecución de proyecto con repositorio clonado.
-git clone https://github.com/Hugo-Medellin/crudApp.git
-cd crudApp
-npm install
-ng serve
+
+- git clone https://github.com/Hugo-Medellin/crudApp.git
+- cd crudApp
+- npm install
+- ng serve
 
 Navegar a `http://localhost/crud/`.
 
@@ -27,6 +28,5 @@ Para esto debe de estar funcionando el [Repositorio: ms-moneda](https://github.c
 
 ## Ejecución de proyecto con docker-compose
 - Ejecutar docker-compose.yml desde la ruta raiz de donde se encuentra el archivo.
-
-Con el siguiente comando.
-`docker-compose up -d`
+- Con el siguiente comando.
+- `docker-compose up -d`
