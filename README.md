@@ -2,7 +2,7 @@
 
 Proyecto generado en Angular versión 17.3.0.
 
-Crud básico que consume microservicio de ms-moneda [Repositorio: ms-moneda](https://github.com/Hugo-Medellin/ms-moneda)
+Crud básico que consume microservicio de [Repositorio: ms-moneda](https://github.com/Hugo-Medellin/ms-moneda)
 
 ## Características
 - Muestra de registros en tabla.
