@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  ### MS MONEDA Spring boot 3
+  ms-moneda:
+    container_name: ms-moneda
+    image: vhmm/ms-moneda:latest
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - test-network
+  
+  ### Crud App Angular 17
+  crupApp:
+    container_name: crudapp
+    image: vhmm/crudapp:latest
+    restart: always
+    depends_on:
+      - ms-moneda
+    ports:
+      - 80:80
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
